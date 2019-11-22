@@ -1,5 +1,7 @@
 package gui;
 
+import generator.Chamber;
+import generator.Passage;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -7,14 +9,18 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import generator.*;
+
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class GuiDemo<toReturn> extends Application {
@@ -26,6 +32,9 @@ public class GuiDemo<toReturn> extends Application {
     private BorderPane root;  //the root element of this GUI
     private Popup descriptionPane;
     private Stage primaryStage;  //The stage that is passed in on initialization
+    private TextArea area;
+    private ComboBox box;
+
 
     /*a call to start replaces a call to the constructor for a JavaFX GUI*/
     @Override
@@ -37,7 +46,8 @@ public class GuiDemo<toReturn> extends Application {
         root = setUpRoot();
         descriptionPane = createPopUp(200, 300, "Example Description of something");
         Scene scene = new Scene(root, 300, 300);
-        primaryStage.setTitle("Hello GUI Demo");
+        primaryStage.setTitle("DnD Level Generator");
+        primaryStage.getIcons().add(new Image("res/icon.png"));
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -45,15 +55,49 @@ public class GuiDemo<toReturn> extends Application {
 
     private BorderPane setUpRoot() {
         BorderPane temp = new BorderPane();
-        temp.setTop(new Label("The name or identifier of the thing below"));
+        area = new TextArea();
+        box = new ComboBox();
+        //temp.setTop(new Label("List of Level components:"));
         Node left = setLeftButtonPanel();  //separate method for the left section
         temp.setLeft(left);
         //TilePane room = createTilePanel();
-        GridPane room = new ChamberView(4,4);
-        temp.setCenter(room);
+        //GridPane room = new ChamberView(4,4);
+        //temp.setCenter(room);
+        Node center = setCenterPanel("");
+        temp.setCenter(center);
+        Node right = setRightPanel();
+        temp.setRight(right);
         return temp;
     }
 
+    private Node setCenterPanel(String text){
+        VBox temp = new VBox();
+        temp.setStyle( "-fx-padding: 10;" +
+        "-fx-border-style: solid inside;" +
+        "-fx-border-width: 2;" +
+        "-fx-border-insets: 5;" +
+        "-fx-border-radius: 5;" +
+        "-fx-border-color: grey;");
+        Label label = new Label("Description of component selected:");
+        area = new TextArea(text);
+        temp.getChildren().add(label);
+        temp.getChildren().add(area);
+        return temp;
+    }
+
+
+    private Node setRightPanel(){
+        VBox temp = new VBox();
+        temp.setStyle( "-fx-padding: 10;" +
+        "-fx-border-style: solid inside;" +
+        "-fx-border-width: 2;" +
+        "-fx-border-insets: 5;" +
+        "-fx-border-radius: 5;" +
+        "-fx-border-color: grey;");
+        box.setValue("Doors list");
+        temp.getChildren().add(box);
+        return temp;
+    }
 
     private Node setLeftButtonPanel() {
         /*this method should be broken down into even smaller methods, maybe one per button*/
@@ -63,15 +107,57 @@ public class GuiDemo<toReturn> extends Application {
                 "-fx-border-width: 2;" +
                 "-fx-border-insets: 5;" +
                 "-fx-border-radius: 5;" +
-                "-fx-border-color: blue;");
+                "-fx-border-color: grey;");
         /*This button listener is an example of a button changing something
         in the controller but nothing happening in the view */
+
+        Label label = new Label("List of level components:");
+        temp.getChildren().add(label);
+
+        ListView list = new ListView();
+//        list.getItems().add("chamber Alpha");
+//        list.getItems().add("chamber Beta");
+//        list.getItems().add("chamber Charlie");
+//        list.getItems().add("chamber Delta");
+//        list.getItems().add("chamber Echo");
+//        temp.getChildren().add(list);
+
+        Button button = new Button("Read Selected Component");
+        button.setOnAction(event -> {
+            ObservableList selectedIndices = list.getSelectionModel().getSelectedIndices();
+            for(Object o : selectedIndices){
+                box.getItems().clear();
+                System.out.println("o = " + o + " (" + o.getClass() + ")");
+                System.out.println((theController.getDescription((int)o)));
+                area.setText((theController.getDescription((int)o)));
+                int i = 1;
+                for(Door p: theController.getDoors()){
+                     box.getItems().add("door " + i);
+                    i++;
+                }
+            }
+        });
+
+         for(Chamber c: theController.getChambers()){
+             list.getItems().add(c.getName());
+         }
+
+         for(Passage p: theController.getPassages()){
+             list.getItems().add(p.getName());
+         }
+//         int i = 1;
+//         for(Door p: theController.getDoors()){
+//             list.getItems().add("door " + i);
+//             i++;
+//         }
+         temp.getChildren().add(list);
+         temp.getChildren().add(button);
 
         Button firstButton = createButton("Hello world", "-fx-background-color: #ff0000; -fx-background-radius: 10, 10, 10, 10;");
         firstButton.setOnAction((ActionEvent event) -> {
             theController.reactToButton();
         });
-        temp.getChildren().add(firstButton);
+        //temp.getChildren().add(firstButton);
 
         /*This button listener is only changing the view and doesn't need
         to contact the controller
@@ -80,14 +166,17 @@ public class GuiDemo<toReturn> extends Application {
         showButton.setOnAction((ActionEvent event) -> {
             descriptionPane.show(primaryStage);
         });
-        temp.getChildren().add(showButton);
+        //temp.getChildren().add(showButton);
         /*this button listener is an example of getting data from the controller */
         Button hideButton = createButton("Hide Description", "-fx-background-color: #FFFFFF; ");
         hideButton.setOnAction((ActionEvent event) -> {
             descriptionPane.hide();
             changeDescriptionText(theController.getNewDescription());
         });
-        temp.getChildren().add(hideButton);
+        //temp.getChildren().add(hideButton);
+
+
+
         return temp;
 
     }
