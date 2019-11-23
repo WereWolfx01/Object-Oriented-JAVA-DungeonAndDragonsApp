@@ -3,8 +3,10 @@ package gui;
 import generator.Chamber;
 import generator.Passage;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -16,6 +18,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import generator.*;
+import javafx.util.StringConverter;
 
 
 import javax.swing.*;
@@ -127,15 +130,11 @@ public class GuiDemo<toReturn> extends Application {
             ObservableList selectedIndices = list.getSelectionModel().getSelectedIndices();
             for(Object o : selectedIndices){
                 box.getItems().clear();
-                System.out.println("o = " + o + " (" + o.getClass() + ")");
-                System.out.println((theController.getDescription((int)o)));
+//                System.out.println("o = " + o + " (" + o.getClass() + ")");
+//                System.out.println((theController.getDescription((int)o)));
                 area.setText((theController.getDescription((int)o)));
-                int i = 1;
-                for(Door p: theController.getDoors()){
-                     box.getItems().add("door " + i);
-                    i++;
-                }
             }
+            descriptionPane.hide();
         });
 
          for(Chamber c: theController.getChambers()){
@@ -153,6 +152,8 @@ public class GuiDemo<toReturn> extends Application {
          temp.getChildren().add(list);
          temp.getChildren().add(button);
 
+
+
         Button firstButton = createButton("Hello world", "-fx-background-color: #ff0000; -fx-background-radius: 10, 10, 10, 10;");
         firstButton.setOnAction((ActionEvent event) -> {
             theController.reactToButton();
@@ -168,16 +169,33 @@ public class GuiDemo<toReturn> extends Application {
         });
         //temp.getChildren().add(showButton);
         /*this button listener is an example of getting data from the controller */
-        Button hideButton = createButton("Hide Description", "-fx-background-color: #FFFFFF; ");
+        Button hideButton = createButton("Hide popup", "-fx-background-color: #FFFFFF; ");
         hideButton.setOnAction((ActionEvent event) -> {
             descriptionPane.hide();
-            changeDescriptionText(theController.getNewDescription());
+//            changeDescriptionText(theController.getNewDescription());
         });
-        //temp.getChildren().add(hideButton);
+        temp.getChildren().add(hideButton);
 
 
 
         return temp;
+
+    }
+
+    public void updateDoors(ArrayList<Door> list){
+     for(Door p: list){
+          box.getItems().add(p.getName());
+     }
+     EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+        public void handle(ActionEvent e)
+        {
+            descriptionPane = createPopUp(200, 300, theController.getDoorDescription((String) box.getValue()));
+                descriptionPane.show(primaryStage);
+        }
+     };
+
+      box.setOnAction(event);
+
 
     }
 

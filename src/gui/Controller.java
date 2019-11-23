@@ -62,12 +62,25 @@ public class Controller {
 
     public String getDescription(int index){
         if( index > 4 ){
+            myGui.updateDoors(((level.getPassages()).get(index-5)).getDoors());
+//            System.out.println(((level.getPassages()).get(index-5)).getDoors().size());
             return (((level.getPassages()).get(index-5)).getDescription());
         }
         else {
+            myGui.updateDoors(((level.getChambers()).get(index)).getDoors());
+//            System.out.println(((level.getChambers()).get(index)).getDoors().size());
             return (((level.getChambers()).get(index)).getDescription());
         }
 
+    }
+
+    public String getDoorDescription(String name){
+        for(Door d: this.getDoors()){
+            if( d.getName().equals(name) ){
+                return d.getDescription();
+            }
+        }
+        return null;
     }
 
 

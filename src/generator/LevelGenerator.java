@@ -24,41 +24,41 @@ public class LevelGenerator {
 
 
         Chamber tempChamber1 = new Chamber("chamber Alpha");
-        Door tempDoor1 = new Door();
+        Door tempDoor1 = new Door("door Alpha");
         tempDoor1.setOneSpace(tempChamber1);
         Passage tempPassage1 = new Passage("passage Alpha");
         tempDoor1.setOneSpace(tempPassage1);
-        Door tempDoor2 = new Door();
+        Door tempDoor2 = new Door("door Bravo");
         tempDoor2.setOneSpace(tempPassage1);
 
         Chamber tempChamber2 = new Chamber("chamber Beta");
         tempDoor2.setOneSpace(tempChamber2);
-        Door tempDoor3 = new Door();
+        Door tempDoor3 = new Door("door Charlie");
         tempDoor3.setOneSpace(tempChamber2);
         Passage tempPassage2 = new Passage("passage Beta");
         tempDoor3.setOneSpace(tempPassage2);
 
-        Door tempDoor4 = new Door();
+        Door tempDoor4 = new Door("door Delta");
         tempDoor4.setOneSpace(tempPassage2);
 
         Chamber tempChamber3 = new Chamber("chamber Charlie");
         tempDoor4.setOneSpace(tempChamber3);
-        Door tempDoor5 = new Door();
+        Door tempDoor5 = new Door("door Echo");
         tempDoor5.setOneSpace(tempChamber3);
         Passage tempPassage3 = new Passage("passage Charlie");
         tempDoor5.setOneSpace(tempPassage3);
 
-        Door tempDoor6 = new Door();
+        Door tempDoor6 = new Door("door Foxtrot");
         tempDoor6.setOneSpace(tempPassage3);
 
         Chamber tempChamber4 = new Chamber("chamber Delta");
         tempDoor6.setOneSpace(tempChamber4);
-        Door tempDoor7 = new Door();
+        Door tempDoor7 = new Door("door Golf");
         tempDoor7.setOneSpace(tempChamber4);
         Passage tempPassage4 = new Passage("passage Delta");
         tempDoor7.setOneSpace(tempPassage4);
 
-        Door tempDoor8 = new Door();
+        Door tempDoor8 = new Door("door Hotel");
         tempDoor8.setOneSpace(tempPassage4);
 
         Chamber tempChamber5 = new Chamber("chamber Echo");

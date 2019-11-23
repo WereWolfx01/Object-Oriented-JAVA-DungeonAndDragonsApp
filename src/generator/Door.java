@@ -18,6 +18,7 @@ public class Door {
 	private boolean archway;
 	private boolean isTrapped;
 	private StringBuilder doorDescription;
+	private String name;
 
 	/*
 	 *
@@ -33,6 +34,20 @@ public class Door {
 		setOpen();
 		setArchway();
 	}
+
+	public Door(String someName) {
+		//needs to set defaults
+		doorDescription = new StringBuilder();
+		mySpaces = new ArrayList<Space>();
+		myTrap = null;
+		myExit = null;
+		setIsTrapped();
+		setLocked();
+		setOpen();
+		setArchway();
+		name = someName;
+	}
+
 
 	/*
 	 *
@@ -248,6 +263,10 @@ You can write your own methods too, you aren't limited to the required ones
 	 */
 	public Exit getExit() {
 		return myExit;
+	}
+
+	public String getName(){
+		return name;
 	}
 
 
