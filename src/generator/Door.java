@@ -3,6 +3,8 @@ student id #1003984
 email: aabdulmu@uoguelph.ca*/
 
 package generator;
+import dnd.die.D20;
+import dnd.die.Die;
 import dnd.models.Exit;
 import dnd.models.Trap;
 import java.util.ArrayList;
@@ -46,6 +48,7 @@ public class Door {
 		setOpen();
 		setArchway();
 		name = someName;
+		genDescription();
 	}
 
 
@@ -70,17 +73,19 @@ public class Door {
 	 */
 	public void setTrapped(boolean flag, int...roll) {
 		// true == trapped.  Trap must be rolled if no integer is given
+		D20 random = new D20();
 		if (flag == true) {
 			myTrap = new Trap();
+			myTrap.chooseTrap(random.roll());
 			if (roll.length > 0) {
-				myTrap.setDescription(roll[0]);
+				myTrap.chooseTrap(roll[0]);
 			}
-			doorDescription.append("door is trapped\n");
-			doorDescription.append("Trap: " + myTrap.getDescription() + "\n");
+//			doorDescription.append("door is trapped\n");
+//			doorDescription.append("Trap: " + myTrap.getDescription() + "\n");
 		} else {
 			myTrap = null;
 			isTrapped = false;
-			doorDescription.append("door is not trapped\n");
+//			doorDescription.append("door is not trapped\n");
 		}
 	}
 
@@ -92,11 +97,11 @@ public class Door {
 		open = flag;
 		if(archway) {
 			open = true;
-			doorDescription.append("door is open\n");
+//			doorDescription.append("door is open\n");
 			return;
 		}
 		if(flag = false) {
-			doorDescription.append("door is closed\n");
+//			doorDescription.append("door is closed\n");
 		}
 	}
 
@@ -122,7 +127,7 @@ public class Door {
 			setOpen(true);
 			setLocked(false);
 			setTrapped(false);
-			doorDescription.append("Door is an archway\n");
+//			doorDescription.append("Door is an archway\n");
 		}
 	}
 
@@ -130,7 +135,7 @@ public class Door {
 	 *
 	 */
 	public void setArchway() {
-		boolean flag = new Random().nextInt(10) == 0;
+		boolean flag = new Random().nextInt(3) == 0;
 		archway = flag;
 		if (archway) {
 			setArchway(true);
@@ -214,6 +219,23 @@ public class Door {
 	public String getDescription() {
 		return doorDescription.toString();
 	}
+
+	public void genConnectTo(){
+		for(Space s: mySpaces){
+			doorDescription.append("\n" + "Connects to: " + s.getName() + "\n");
+			doorDescription.append(s.getDescription());
+		}
+	}
+
+	private void genDescription(){
+		doorDescription.append("Door is archway: " + archway + "\n");
+		doorDescription.append("Door is open: " + open + "\n");
+		doorDescription.append("Door is locked: " + locked + "\n");
+		doorDescription.append("Door is trapped: " + isTrapped + "\n");
+		if(isTrapped){
+			doorDescription.append("Trap: " + myTrap.getDescription() + "\n");
+		}
+	}
 /***********
 You can write your own methods too, you aren't limited to the required ones
 *************/
@@ -224,9 +246,9 @@ You can write your own methods too, you aren't limited to the required ones
 	public void setLocked(boolean flag) {
 		locked = flag;
 		if (flag) {
-			doorDescription.append("door is locked\n");
+//			doorDescription.append("door is locked\n");
 		} else {
-			doorDescription.append("door is not locked\n");
+//			doorDescription.append("door is not locked\n");
 		}
 	}
 
@@ -236,6 +258,11 @@ You can write your own methods too, you aren't limited to the required ones
 	public void setLocked() {
 		boolean flag = new Random().nextInt(6)==0;
 		locked = flag;
+		if (flag) {
+//			doorDescription.append("door is locked\n");
+		} else {
+//			doorDescription.append("door is not locked\n");
+		}
 	}
 
 	/*
@@ -249,7 +276,7 @@ You can write your own methods too, you aren't limited to the required ones
 	 *
 	 */
 	public void setIsTrapped() {
-		boolean flag = new Random().nextInt(20) == 0;
+		boolean flag = new Random().nextInt(5) == 0;
 		isTrapped = flag;
 		if (isTrapped) {
 			setTrapped(true);

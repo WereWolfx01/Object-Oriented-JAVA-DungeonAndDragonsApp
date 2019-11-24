@@ -80,7 +80,7 @@ public void setResult(int choice) {
     break;
 
     case 18: case 19:
-    result.append("Dead End\n");
+    result.append("Archway\n");
     break;
 
     case 20:

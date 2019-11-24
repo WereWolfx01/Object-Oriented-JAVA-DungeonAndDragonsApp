@@ -1,5 +1,7 @@
 package gui;
 
+import dnd.models.Monster;
+import dnd.models.Treasure;
 import generator.Chamber;
 import hydra.Battle;
 import hydra.Hydra;
@@ -81,6 +83,33 @@ public class Controller {
             }
         }
         return null;
+    }
+
+    public Door getDoorFromString(String name){
+        for(Door d: this.getDoors()){
+            if( d.getName().equals(name) ){
+                return d;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<Monster> getMonsters(int index){
+        if( index > 4 ){
+            return (((level.getPassages()).get(index-5)).getMonsters());
+        }
+        else {
+            return (((level.getChambers()).get(index)).getMonsters());
+        }
+    }
+
+    public ArrayList<Treasure> getTreasure(int index){
+        if( index > 4 ){
+            return (((level.getPassages()).get(index-5)).getTrasures());
+        }
+        else {
+            return (((level.getChambers()).get(index)).getTreasures());
+        }
     }
 
 

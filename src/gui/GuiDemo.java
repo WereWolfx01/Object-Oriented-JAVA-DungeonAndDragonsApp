@@ -1,5 +1,6 @@
 package gui;
 
+import dnd.models.Monster;
 import generator.Chamber;
 import generator.Passage;
 import javafx.application.Application;
@@ -34,9 +35,15 @@ public class GuiDemo<toReturn> extends Application {
     private Controller theController;
     private BorderPane root;  //the root element of this GUI
     private Popup descriptionPane;
+    private Popup editPane;
     private Stage primaryStage;  //The stage that is passed in on initialization
     private TextArea area;
     private ComboBox box;
+    private ListView list;
+    private ComboBox addMonster;
+    private ComboBox removeMonster;
+    private ComboBox addTreasure;
+    private ComboBox removeTreasure;
 
 
     /*a call to start replaces a call to the constructor for a JavaFX GUI*/
@@ -48,6 +55,7 @@ public class GuiDemo<toReturn> extends Application {
         /*Border Panes have  top, left, right, center and bottom sections */
         root = setUpRoot();
         descriptionPane = createPopUp(200, 300, "Example Description of something");
+        editPane = createPopUp(800, 600);
         Scene scene = new Scene(root, 300, 300);
         primaryStage.setTitle("DnD Level Generator");
         primaryStage.getIcons().add(new Image("res/icon.png"));
@@ -60,6 +68,7 @@ public class GuiDemo<toReturn> extends Application {
         BorderPane temp = new BorderPane();
         area = new TextArea();
         box = new ComboBox();
+        list = new ListView();
         //temp.setTop(new Label("List of Level components:"));
         Node left = setLeftButtonPanel();  //separate method for the left section
         temp.setLeft(left);
@@ -117,13 +126,24 @@ public class GuiDemo<toReturn> extends Application {
         Label label = new Label("List of level components:");
         temp.getChildren().add(label);
 
-        ListView list = new ListView();
 //        list.getItems().add("chamber Alpha");
 //        list.getItems().add("chamber Beta");
 //        list.getItems().add("chamber Charlie");
 //        list.getItems().add("chamber Delta");
 //        list.getItems().add("chamber Echo");
 //        temp.getChildren().add(list);
+
+        Button editButton = createButton("Edit", "-fx-background-color: #FFFFFF; ");
+        editButton.setOnAction((ActionEvent) -> {
+            ObservableList selectedIndices = list.getSelectionModel().getSelectedIndices();
+            for(Object o : selectedIndices){
+                editPane = createPopUp(800, 600);
+                for(Monster m: theController.getMonsters((int) o)) {
+                    removeMonster.getItems().add(m.getDescription());
+                }
+            }
+            editPane.show(primaryStage);
+        });
 
         Button button = new Button("Read Selected Component");
         button.setOnAction(event -> {
@@ -133,6 +153,7 @@ public class GuiDemo<toReturn> extends Application {
 //                System.out.println("o = " + o + " (" + o.getClass() + ")");
 //                System.out.println((theController.getDescription((int)o)));
                 area.setText((theController.getDescription((int)o)));
+                temp.getChildren().add(editButton);
             }
             descriptionPane.hide();
         });
@@ -172,8 +193,23 @@ public class GuiDemo<toReturn> extends Application {
         Button hideButton = createButton("Hide popup", "-fx-background-color: #FFFFFF; ");
         hideButton.setOnAction((ActionEvent event) -> {
             descriptionPane.hide();
+            editPane.hide();
 //            changeDescriptionText(theController.getNewDescription());
         });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         temp.getChildren().add(hideButton);
 
 
@@ -189,8 +225,11 @@ public class GuiDemo<toReturn> extends Application {
      EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
         public void handle(ActionEvent e)
         {
-            descriptionPane = createPopUp(200, 300, theController.getDoorDescription((String) box.getValue()));
-                descriptionPane.show(primaryStage);
+            descriptionPane.hide();
+            changeDescriptionText(theController.getDoorDescription((String) box.getValue()));
+//            descriptionPane = createPopUp(200, 300, theController.getDoorDescription((String) box.getValue()));
+//            System.out.println(theController.getDoors().get(0).getSpaces().get(0).getDescription());
+            descriptionPane.show(primaryStage);
         }
      };
 
@@ -211,7 +250,77 @@ public class GuiDemo<toReturn> extends Application {
         textA.setStyle(" -fx-background-color: white;");
         textA.setMinWidth(80);
         textA.setMinHeight(50);
+
         return popup;
+    }
+
+    private Popup createPopUp(int x, int y){
+    Popup popup = new Popup();
+    popup.setX(x);
+    popup.setY(y);
+    BorderPane temp = new BorderPane();
+    VBox box1 = new VBox();
+    VBox box2 = new VBox();
+    box1.setStyle( "-fx-padding: 10;" +
+    "-fx-border-style: solid inside;" +
+    "-fx-border-width: 2;" +
+    "-fx-border-insets: 5;" +
+    "-fx-border-radius: 5;" +
+    "-fx-border-color: grey;");
+    box2.setStyle( "-fx-padding: 10;" +
+    "-fx-border-style: solid inside;" +
+    "-fx-border-width: 2;" +
+    "-fx-border-insets: 5;" +
+    "-fx-border-radius: 5;" +
+    "-fx-border-color: grey;");
+
+    HBox hbox1 = new HBox();
+    hbox1.setStyle( "-fx-padding: 10;" +
+    "-fx-border-style: solid inside;" +
+    "-fx-border-width: 2;" +
+    "-fx-border-insets: 5;" +
+    "-fx-border-radius: 5;" +
+    "-fx-border-color: grey;");
+
+    HBox hbox2 = new HBox();
+    hbox2.setStyle( "-fx-padding: 10;" +
+    "-fx-border-style: solid inside;" +
+    "-fx-border-width: 2;" +
+    "-fx-border-insets: 5;" +
+    "-fx-border-radius: 5;" +
+    "-fx-border-color: grey;");
+
+    Button addMonsterButton = createButton("ADD", "-fx-background-color: #ff0000; -fx-background-radius: 10, 10, 10, 10;");
+    Button addTreasureButton = createButton("ADD", "-fx-background-color: #ff0000; -fx-background-radius: 10, 10, 10, 10;");
+
+    addMonster = new ComboBox(FXCollections.observableList(setupMonsters()));
+    addMonster.setValue("Add Monster");
+    removeMonster = new ComboBox();
+    removeMonster.setValue("Remove Monster");
+
+    hbox1.getChildren().add(addMonster);
+    hbox1.getChildren().add(addMonsterButton);
+
+
+
+    box1.getChildren().add(hbox1);
+    box1.getChildren().add(removeMonster);
+
+
+    addTreasure = new ComboBox(FXCollections.observableList(setupTreasures()));
+    addTreasure.setValue("Add Treasure");
+    removeTreasure = new ComboBox();
+    removeTreasure.setValue("Remove Treasure");
+    
+    hbox2.getChildren().add(addTreasure);
+    hbox2.getChildren().add(addTreasureButton);
+
+    box2.getChildren().add(hbox2);
+    box2.getChildren().add(removeTreasure);
+    temp.setLeft(box1);
+    temp.setCenter(box2);
+    popup.getContent().addAll(temp);
+    return popup;
     }
 
     /*generic button creation method ensure that all buttons will have a
@@ -229,11 +338,49 @@ public class GuiDemo<toReturn> extends Application {
         for (Node t : list) {
             if (t instanceof TextArea) {
                 TextArea temp = (TextArea) t;
+                temp.clear();
                 temp.setText(text);
             }
 
         }
 
+    }
+
+    private ArrayList<String> setupMonsters(){
+        ArrayList<String> monsters = new ArrayList<>();
+        monsters.add("Ant, giant");
+        monsters.add("Badger");
+        monsters.add("Beetle, fire");
+        monsters.add("Demon, manes");
+        monsters.add("Dwarf");
+        monsters.add("Ear Seeker");
+        monsters.add("Elf");
+        monsters.add("Gnome");
+        monsters.add("Goblin");
+        monsters.add("Hafling");
+        monsters.add("Hobgoblin");
+        monsters.add("Human Bandit");
+        monsters.add("Kobold");
+        monsters.add("Orc");
+        monsters.add("Piercer");
+        monsters.add("Rat, giant");
+        monsters.add("Rot grub");
+        monsters.add("Shrieker");
+        monsters.add("Skeleton");
+        monsters.add("Zombie");
+        return monsters;
+    }
+
+    private ArrayList<String> setupTreasures(){
+        ArrayList<String> treasures = new ArrayList<>();
+        treasures.add("1000 copper pieces");
+        treasures.add("1000 silver pieces");
+        treasures.add("750 electrum pieces");
+        treasures.add("250 gold pieces");
+        treasures.add("100 platinum pieces");
+        treasures.add("1-4 gems");
+        treasures.add("1 piece iewelry");
+        return treasures;
     }
 
 //    private GridPane createGridPanel() {

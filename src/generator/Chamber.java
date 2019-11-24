@@ -66,7 +66,7 @@ public class Chamber extends Space {
 		myContents.chooseContents(roll.roll());
 
 		mySize = ChamberShape.selectChamberShape(roll.roll());
-		mySize.selectChamberShape(1);
+//		mySize.selectChamberShape(1);
 		setExits("random");
 		setDoors();
 		genChamber();
@@ -128,7 +128,7 @@ public void addTreasure(Treasure theTreasure) {
 /*
  *
  */
-public ArrayList<Treasure> getTreasureList() {
+public ArrayList<Treasure> getTreasures() {
 
 return myTreasures;
 }
@@ -234,6 +234,7 @@ private void genChamber() {
 				details.append("Monster: ");
 				details.append(userMonster.getDescription());
 				details.append('\n');
+				myMonsters.add(userMonster);
 			break;
 
 			case "monster and treasure":
@@ -250,6 +251,8 @@ private void genChamber() {
 					details.append("\nTreasure: ");
 					details.append(userTreasure.getDescription());
 					details.append('\n');
+					myMonsters.add(userMonster);
+					myTreasures.add(userTreasure);
 			break;
 
 			case "treasure":
@@ -260,6 +263,7 @@ private void genChamber() {
 				details.append("Treasure: ");
 				details.append(userTreasure.getDescription());
 				details.append('\n');
+				myTreasures.add(userTreasure);
 			break;
 
 			default:

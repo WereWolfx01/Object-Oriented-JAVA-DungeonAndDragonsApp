@@ -26,6 +26,8 @@ public class Passage extends Space {
 	private ArrayList<PassageSection> passageSectionList;
 	private PassageSection newSection;
 	private StringBuilder description;
+	private ArrayList<Monster> myMonsters;
+	private ArrayList<Treasure> myTreasures;
 	private String name;
 
 	/*
@@ -98,6 +100,14 @@ public Monster getMonster(int i) {
 	} else {
 		return null;
 	}
+}
+
+public ArrayList<Monster> getMonsters(){
+	return myMonsters;
+}
+
+public ArrayList<Treasure> getTrasures(){
+	return myTreasures;
 }
 
 

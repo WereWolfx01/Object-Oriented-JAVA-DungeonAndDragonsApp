@@ -64,6 +64,15 @@ public class LevelGenerator {
         Chamber tempChamber5 = new Chamber("chamber Echo");
         tempDoor8.setOneSpace(tempChamber5);
 
+        tempDoor1.genConnectTo();
+        tempDoor2.genConnectTo();
+        tempDoor3.genConnectTo();
+        tempDoor4.genConnectTo();
+        tempDoor5.genConnectTo();
+        tempDoor6.genConnectTo();
+        tempDoor7.genConnectTo();
+        tempDoor8.genConnectTo();
+
         chambers.add(tempChamber1);
         chambers.add(tempChamber2);
         chambers.add(tempChamber3);
