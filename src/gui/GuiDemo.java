@@ -49,6 +49,7 @@ public class GuiDemo<toReturn> extends Application {
         descriptionPane = createPopUp(200, 300, "Example Description of something");
         editPane = createPopUp(800, 600);
         Scene scene = new Scene(root, 300, 300);
+        primaryStage.setMaximized(true);
         primaryStage.setTitle("DnD Level Generator");
         primaryStage.getIcons().add(new Image("res/icon.png"));
         primaryStage.setScene(scene);
@@ -65,6 +66,7 @@ public class GuiDemo<toReturn> extends Application {
         descriptionPane = createPopUp(200, 300, "Example Description of something");
         editPane = createPopUp(800, 600);
         Scene scene = new Scene(root, 300, 300);
+        primaryStage.setMaximized(true);
         primaryStage.setTitle("DnD Level Generator");
         primaryStage.getIcons().add(new Image("res/icon.png"));
         primaryStage.setScene(scene);
@@ -274,6 +276,7 @@ public class GuiDemo<toReturn> extends Application {
             box.getItems().clear();
             area.setText((theController.getDescription((int)o)));
             removeMonster.getItems().add((String) addMonster.getValue());
+            descriptionPane.hide();
 
         }
     });
@@ -285,6 +288,7 @@ public class GuiDemo<toReturn> extends Application {
             box.getItems().clear();
             area.setText((theController.getDescription((int)o)));
             removeMonster.getItems().remove((String) removeMonster.getValue());
+            descriptionPane.hide();
         }
     });
 
@@ -313,6 +317,7 @@ public class GuiDemo<toReturn> extends Application {
             box.getItems().clear();
             area.setText((theController.getDescription((int)o)));
             removeTreasure.getItems().add((String) addTreasure.getValue()) ;
+            descriptionPane.hide();
         }
     });
 
@@ -323,6 +328,7 @@ public class GuiDemo<toReturn> extends Application {
             box.getItems().clear();
             area.setText((theController.getDescription((int)o)));
             removeTreasure.getItems().remove((String) removeTreasure.getValue());
+            descriptionPane.hide();   
         }
     });
 
@@ -423,6 +429,7 @@ public class GuiDemo<toReturn> extends Application {
             try{
                File file = chooser.showOpenDialog(primaryStage);
                theController.deserialize(file.toString());
+               primaryStage.hide();
                this.start(primaryStage, this.theController);
             }
             catch (NullPointerException n){
