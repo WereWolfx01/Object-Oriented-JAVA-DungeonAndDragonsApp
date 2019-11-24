@@ -6,7 +6,7 @@ package generator;
 import dnd.die.D20;
 import java.lang.StringBuilder;
 
-public class Level {
+public class Level implements java.io.Serializable {
   private StringBuilder result = new StringBuilder();
   private D20 die;
   private int roll;

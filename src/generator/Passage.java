@@ -16,7 +16,7 @@ You will need to keep track of which door is the "beginning" of the passage
 so that you know how to
 */
 
-public class Passage extends Space {
+public class Passage extends Space implements java.io.Serializable {
 	//these instance variables are suggestions only
 	//you can change them if you wish.
 

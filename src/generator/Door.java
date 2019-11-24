@@ -10,7 +10,7 @@ import dnd.models.Trap;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Door {
+public class Door implements java.io.Serializable {
 
 	private ArrayList<Space> mySpaces;
 	private Exit myExit;

@@ -14,7 +14,7 @@ import java.lang.StringBuilder;
 import dnd.models.Exit;
 import dnd.die.*;
 
-public class Chamber extends Space {
+public class Chamber extends Space implements java.io.Serializable {
 
 	private ChamberContents myContents;
 	private ChamberShape mySize;

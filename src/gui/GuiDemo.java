@@ -1,6 +1,6 @@
 package gui;
 
-import dnd.models.Monster;
+
 import generator.Chamber;
 import generator.Passage;
 import javafx.application.Application;
@@ -8,30 +8,22 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import generator.*;
-import javafx.util.StringConverter;
 
-
-import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class GuiDemo<toReturn> extends Application {
-    /* Even if it is a GUI it is useful to have instance variables
-    so that you can break the processing up into smaller methods that have
-    one responsibility.
-     */
     private Controller theController;
     private BorderPane root;  //the root element of this GUI
     private Popup descriptionPane;
@@ -61,24 +53,38 @@ public class GuiDemo<toReturn> extends Application {
         primaryStage.getIcons().add(new Image("res/icon.png"));
         primaryStage.setScene(scene);
         primaryStage.show();
-
     }
+
+    public void start(Stage assignedStage, Controller toAdd) {
+        /*Initializing instance variables */
+        theController = toAdd;
+        theController.setGui(this);
+        primaryStage = assignedStage;
+        /*Border Panes have  top, left, right, center and bottom sections */
+        root = setUpRoot();
+        descriptionPane = createPopUp(200, 300, "Example Description of something");
+        editPane = createPopUp(800, 600);
+        Scene scene = new Scene(root, 300, 300);
+        primaryStage.setTitle("DnD Level Generator");
+        primaryStage.getIcons().add(new Image("res/icon.png"));
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
 
     private BorderPane setUpRoot() {
         BorderPane temp = new BorderPane();
         area = new TextArea();
         box = new ComboBox();
         list = new ListView();
-        //temp.setTop(new Label("List of Level components:"));
         Node left = setLeftButtonPanel();  //separate method for the left section
         temp.setLeft(left);
-        //TilePane room = createTilePanel();
-        //GridPane room = new ChamberView(4,4);
-        //temp.setCenter(room);
         Node center = setCenterPanel("");
         temp.setCenter(center);
         Node right = setRightPanel();
         temp.setRight(right);
+        Node top = setTop();
+        temp.setTop(top);
         return temp;
     }
 
@@ -112,7 +118,6 @@ public class GuiDemo<toReturn> extends Application {
     }
 
     private Node setLeftButtonPanel() {
-        /*this method should be broken down into even smaller methods, maybe one per button*/
         VBox temp = new VBox();
         temp.setStyle("-fx-padding: 10;" +
                 "-fx-border-style: solid inside;" +
@@ -120,28 +125,12 @@ public class GuiDemo<toReturn> extends Application {
                 "-fx-border-insets: 5;" +
                 "-fx-border-radius: 5;" +
                 "-fx-border-color: grey;");
-        /*This button listener is an example of a button changing something
-        in the controller but nothing happening in the view */
 
         Label label = new Label("List of level components:");
         temp.getChildren().add(label);
 
-//        list.getItems().add("chamber Alpha");
-//        list.getItems().add("chamber Beta");
-//        list.getItems().add("chamber Charlie");
-//        list.getItems().add("chamber Delta");
-//        list.getItems().add("chamber Echo");
-//        temp.getChildren().add(list);
-
         Button editButton = createButton("Edit", "-fx-background-color: #FFFFFF; ");
         editButton.setOnAction((ActionEvent) -> {
-//            ObservableList selectedIndices = list.getSelectionModel().getSelectedIndices();
-//            for(Object o : selectedIndices){
-//                editPane = createPopUp(800, 600);
-//                for(Monster m: theController.getMonsters((int) o)) {
-//                    removeMonster.getItems().add(m.getDescription());
-//                }
-//            }
             editPane.show(primaryStage);
         });
 
@@ -150,8 +139,6 @@ public class GuiDemo<toReturn> extends Application {
             ObservableList selectedIndices = list.getSelectionModel().getSelectedIndices();
             for(Object o : selectedIndices){
                 box.getItems().clear();
-//                System.out.println("o = " + o + " (" + o.getClass() + ")");
-//                System.out.println((theController.getDescription((int)o)));
                 area.setText((theController.getDescription((int)o)));
             }
             descriptionPane.hide();
@@ -164,36 +151,14 @@ public class GuiDemo<toReturn> extends Application {
          for(Passage p: theController.getPassages()){
              list.getItems().add(p.getName());
          }
-//         int i = 1;
-//         for(Door p: theController.getDoors()){
-//             list.getItems().add("door " + i);
-//             i++;
-//         }
          temp.getChildren().add(list);
          temp.getChildren().add(button);
 
 
-
-        Button firstButton = createButton("Hello world", "-fx-background-color: #ff0000; -fx-background-radius: 10, 10, 10, 10;");
-        firstButton.setOnAction((ActionEvent event) -> {
-            theController.reactToButton();
-        });
-        //temp.getChildren().add(firstButton);
-
-        /*This button listener is only changing the view and doesn't need
-        to contact the controller
-         */
-        Button showButton = createButton("Show Description", "-fx-background-color: #FFFFFF; ");
-        showButton.setOnAction((ActionEvent event) -> {
-            descriptionPane.show(primaryStage);
-        });
-        //temp.getChildren().add(showButton);
-        /*this button listener is an example of getting data from the controller */
         Button hideButton = createButton("Hide popup", "-fx-background-color: #FFFFFF; ");
         hideButton.setOnAction((ActionEvent event) -> {
             descriptionPane.hide();
             editPane.hide();
-//            changeDescriptionText(theController.getNewDescription());
         });
 
 
@@ -213,15 +178,10 @@ public class GuiDemo<toReturn> extends Application {
      for(Door p: list){
           box.getItems().add(p.getName());
      }
-     EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-        public void handle(ActionEvent e)
-        {
-            descriptionPane.hide();
-            changeDescriptionText(theController.getDoorDescription((String) box.getValue()));
-//            descriptionPane = createPopUp(200, 300, theController.getDoorDescription((String) box.getValue()));
-//            System.out.println(theController.getDoors().get(0).getSpaces().get(0).getDescription());
-            descriptionPane.show(primaryStage);
-        }
+     EventHandler<ActionEvent> event = e -> {
+         descriptionPane.hide();
+         changeDescriptionText(theController.getDoorDescription((String) box.getValue()));
+         descriptionPane.show(primaryStage);
      };
 
       box.setOnAction(event);
@@ -229,9 +189,6 @@ public class GuiDemo<toReturn> extends Application {
 
     }
 
-    /* an example of a popup area that can be set to nearly any
-    type of node
-     */
     private Popup createPopUp(int x, int y, String text) {
         Popup popup = new Popup();
         popup.setX(x);
@@ -383,9 +340,6 @@ public class GuiDemo<toReturn> extends Application {
     return popup;
     }
 
-    /*generic button creation method ensure that all buttons will have a
-    similar style and means that the style only need to be in one place
-     */
     private Button createButton(String text, String format) {
         Button btn = new Button();
         btn.setText(text);
@@ -401,9 +355,7 @@ public class GuiDemo<toReturn> extends Application {
                 temp.clear();
                 temp.setText(text);
             }
-
         }
-
     }
 
     private ArrayList<String> setupMonsters(){
@@ -443,92 +395,48 @@ public class GuiDemo<toReturn> extends Application {
         return treasures;
     }
 
-//    private GridPane createGridPanel() {
-//        GridPane t = new GridPane();
-//        /*t.setStyle(
-//                "-fx-border-style: solid inside;" +
-//                        "-fx-border-width: 2;" +
-//                        "-fx-border-insets: 1;" +
-//                        "-fx-border-radius: 9;" +
-//                        "-fx-border-color: black;");*/
-//        Node[] tiles = makeTiles();  //this should be a roomview object
-//        t.add(tiles[0],0,0,1,1);
-//        t.add(tiles[1],0,1,1,1);
-//        t.add(tiles[2],0,2,1,1);
-//        t.add(tiles[3],0,3,1,1);
-//        t.add(tiles[4],1,0,1,1);
-//        t.add(tiles[5],1,1,1,1);
-//        t.add(tiles[6],1,2,1,1);
-//        t.add(tiles[7],1,3,1,1);
-//        t.add(tiles[8],2,0,1,1);
-//        t.add(tiles[9],2,1,1,1);
-//        t.add(tiles[10],2,2,1,1);
-//        t.add(tiles[11],2,3,1,1);
-//        t.add(tiles[12],3,0,1,1);
-//        t.add(tiles[13],3,1,1,1);
-//        t.add(tiles[14],3,2,1,1);
-//        t.add(tiles[15],3,3,1,1);
-//        //t.setHgap(0);
-//        //t.setVgap(0);
-//          return t;
-//    }
+    private MenuBar setTop(){
+        MenuBar menuBar = new MenuBar();
+        Menu fileMenu = new Menu("File");
+        MenuItem save = new MenuItem("Save");
+        MenuItem load = new MenuItem("Load");
 
-//    private TilePane createTilePanel() {
-//        TilePane t = new TilePane();
-//        t.setStyle(
-//                "-fx-border-style: solid inside;" +
-//                        "-fx-border-width: 2;" +
-//                        "-fx-border-insets: 1;" +
-//                        "-fx-border-radius: 9;" +
-//                        "-fx-border-color: black;");
-//        Node[] tiles = makeTiles();  //this should be a roomview object
-//        int len = tiles.length/4; //hacky way to make a 4x4
-//        t.setOrientation(Orientation.HORIZONTAL);
-//        t.setTileAlignment(Pos.CENTER_LEFT);
-//        t.setHgap(0);
-//        t.setVgap(0);
-//        t.setPrefColumns(4);
-//        t.setMaxWidth(4 *50);  //should be getting the size from the roomview object
-//        ObservableList list = t.getChildren();
-//        list.addAll(tiles);  //write a method that adds the roomview objects
-//        return t;
-//    }
+        save.setOnAction((ActionEvent) -> {
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Save your level");
 
-//    private Node[] makeTiles() {
-//    String floor = "/res/floor.png";
-//    String treasure = "/res/tres.png";
-//
-//        Node[] toReturn = {
-//                floorFactory(floor),
-//                floorFactory(floor),
-//                floorFactory(floor),
-//                floorFactory(floor),
-//                floorFactory(floor),
-//                floorFactory(floor),
-//                floorFactory(treasure),
-//                floorFactory(floor),
-//                floorFactory(floor),
-//                floorFactory(floor),
-//                floorFactory(floor),
-//                floorFactory(floor),
-//                floorFactory(floor),
-//                floorFactory(floor),
-//                floorFactory(floor),
-//                floorFactory(floor)
-//            };
-//
-//        return toReturn;
-//}
-//
-//    public Node floorFactory(String img) {
-//        Image floor = new Image(getClass().getResourceAsStream(img));
-//        Label toReturn = new Label();
-//        ImageView imageView = new ImageView(floor);
-//        imageView.setFitWidth(50);
-//        imageView.setFitHeight(50);
-//        toReturn.setGraphic(imageView);
-//        return toReturn;
-//    }
+            try{
+                File file = chooser.showSaveDialog(primaryStage);
+                theController.serialize(file.toString());
+            }
+            catch (NullPointerException n){
+                System.out.println("File not Saved");
+            }
+
+
+        });
+
+        load.setOnAction((ActionEvent) -> {
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Load your level");
+
+            try{
+               File file = chooser.showOpenDialog(primaryStage);
+               theController.deserialize(file.toString());
+               this.start(primaryStage, this.theController);
+            }
+            catch (NullPointerException n){
+                System.out.println("No file selected");
+            }
+        });
+
+        fileMenu.getItems().add(save);
+        fileMenu.getItems().add(load);
+
+        menuBar.getMenus().add(fileMenu);
+        return menuBar;
+    }
+
 
     public static void main(String[] args) {
         launch(args);

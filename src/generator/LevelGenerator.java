@@ -7,7 +7,7 @@ import java.util.Random;
 import java.util.WeakHashMap;
 
 
-public class LevelGenerator {
+public class LevelGenerator implements java.io.Serializable {
     private ArrayList<Chamber> chambers;
     private ArrayList<Passage> passages;
     private ArrayList<Door> doors;

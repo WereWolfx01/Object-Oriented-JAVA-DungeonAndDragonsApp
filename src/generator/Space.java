@@ -4,7 +4,7 @@ email: aabdulmu@uoguelph.ca*/
 
 package generator;
 
-public abstract class Space {
+public abstract class Space implements java.io.Serializable {
 
 /*
  *

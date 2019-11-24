@@ -9,7 +9,7 @@ import dnd.models.Monster;
 
 /* Represents a 10 ft section of passageway */
 
-public class PassageSection {
+public class PassageSection implements java.io.Serializable {
 	private Door myDoor;
 	private Monster myMonster;
 	private StringBuilder section;
