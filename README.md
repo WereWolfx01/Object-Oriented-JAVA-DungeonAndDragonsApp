@@ -5,3 +5,5 @@ This statement is to confirm that I have worked on this assignment on my own and
 
 Copyrights:
   -> DnD icon downloaded from https://www.pngfind.com/mpng/JxwRix_the-dungeons-and-dragons-group-has-added-a/
+
+* Only required features are implemented.
