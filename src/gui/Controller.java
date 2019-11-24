@@ -112,5 +112,23 @@ public class Controller {
         }
     }
 
+    public void addToDescription(String toAdd, int index){
+        if( index > 4 ){
+            ((level.getPassages()).get(index-5)).addToDescription(toAdd);
+        }
+        else {
+            ((level.getChambers()).get(index)).addToDescription(toAdd);
+        }
+    }
+
+    public void removeFromDescription(String toRemove, int index){
+        if( index > 4 ){
+            ((level.getPassages()).get(index-5)).removeFromDescription(toRemove);
+        }
+        else {
+            ((level.getChambers()).get(index)).removeFromDescription(toRemove);
+        }
+    }
+
 
 }

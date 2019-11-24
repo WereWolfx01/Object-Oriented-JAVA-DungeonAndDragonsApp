@@ -180,4 +180,12 @@ public String getName(){
 	return name;
 }
 
+public void addToDescription(String toAdd){
+	description.append(toAdd);
+}
+
+public void removeFromDescription(String toRemove){
+	description = new StringBuilder(description.toString().replaceFirst(toRemove, ""));
+}
+
 }

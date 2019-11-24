@@ -279,4 +279,12 @@ public String getName(){
 	return name;
 }
 
+public void addToDescription(String toAdd){
+	details.append(toAdd);
+}
+
+public void removeFromDescription(String toRemove){
+	details = new StringBuilder(details.toString().replaceFirst(toRemove, ""));
+}
+
 }

@@ -135,13 +135,13 @@ public class GuiDemo<toReturn> extends Application {
 
         Button editButton = createButton("Edit", "-fx-background-color: #FFFFFF; ");
         editButton.setOnAction((ActionEvent) -> {
-            ObservableList selectedIndices = list.getSelectionModel().getSelectedIndices();
-            for(Object o : selectedIndices){
-                editPane = createPopUp(800, 600);
-                for(Monster m: theController.getMonsters((int) o)) {
-                    removeMonster.getItems().add(m.getDescription());
-                }
-            }
+//            ObservableList selectedIndices = list.getSelectionModel().getSelectedIndices();
+//            for(Object o : selectedIndices){
+//                editPane = createPopUp(800, 600);
+//                for(Monster m: theController.getMonsters((int) o)) {
+//                    removeMonster.getItems().add(m.getDescription());
+//                }
+//            }
             editPane.show(primaryStage);
         });
 
@@ -153,7 +153,6 @@ public class GuiDemo<toReturn> extends Application {
 //                System.out.println("o = " + o + " (" + o.getClass() + ")");
 //                System.out.println((theController.getDescription((int)o)));
                 area.setText((theController.getDescription((int)o)));
-                temp.getChildren().add(editButton);
             }
             descriptionPane.hide();
         });
@@ -198,21 +197,13 @@ public class GuiDemo<toReturn> extends Application {
         });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+        temp.getChildren().add(editButton);
         temp.getChildren().add(hideButton);
 
-
+        list.setOnMouseClicked((ActionEvent) -> {
+            editPane.hide();
+            descriptionPane.hide();
+        });
 
         return temp;
 
@@ -267,6 +258,7 @@ public class GuiDemo<toReturn> extends Application {
     "-fx-border-insets: 5;" +
     "-fx-border-radius: 5;" +
     "-fx-border-color: grey;");
+
     box2.setStyle( "-fx-padding: 10;" +
     "-fx-border-style: solid inside;" +
     "-fx-border-width: 2;" +
@@ -290,33 +282,101 @@ public class GuiDemo<toReturn> extends Application {
     "-fx-border-radius: 5;" +
     "-fx-border-color: grey;");
 
+    HBox hbox3 = new HBox();
+    hbox3.setStyle( "-fx-padding: 10;" +
+    "-fx-border-style: solid inside;" +
+    "-fx-border-width: 2;" +
+    "-fx-border-insets: 5;" +
+    "-fx-border-radius: 5;" +
+    "-fx-border-color: grey;");
+
+    HBox hbox4 = new HBox();
+    hbox4.setStyle( "-fx-padding: 10;" +
+    "-fx-border-style: solid inside;" +
+    "-fx-border-width: 2;" +
+    "-fx-border-insets: 5;" +
+    "-fx-border-radius: 5;" +
+    "-fx-border-color: grey;");
+
     Button addMonsterButton = createButton("ADD", "-fx-background-color: #ff0000; -fx-background-radius: 10, 10, 10, 10;");
     Button addTreasureButton = createButton("ADD", "-fx-background-color: #ff0000; -fx-background-radius: 10, 10, 10, 10;");
+    Button removeMonsterButton = createButton("REMOVE", "-fx-background-color: #ff0000; -fx-background-radius: 10, 10, 10, 10;");
+    Button removeTreasureButton = createButton("REMOVE", "-fx-background-color: #ff0000; -fx-background-radius: 10, 10, 10, 10;");
 
     addMonster = new ComboBox(FXCollections.observableList(setupMonsters()));
     addMonster.setValue("Add Monster");
     removeMonster = new ComboBox();
     removeMonster.setValue("Remove Monster");
 
+    addMonsterButton.setOnAction((ActionEvent) -> {
+        ObservableList selectedIndices = list.getSelectionModel().getSelectedIndices();
+        for(Object o : selectedIndices){
+            theController.addToDescription("Monster: ", (int) o);
+            theController.addToDescription((String) addMonster.getValue(), (int) o);
+            theController.addToDescription("\n", (int) o);
+            box.getItems().clear();
+            area.setText((theController.getDescription((int)o)));
+            removeMonster.getItems().add((String) addMonster.getValue());
+
+        }
+    });
+
+    removeMonsterButton.setOnAction((ActionEvent) -> {
+        ObservableList selectedIndices = list.getSelectionModel().getSelectedIndices();
+        for(Object o : selectedIndices){
+            theController.removeFromDescription("Monster: "+(String) removeMonster.getValue()+"\n", (int) o);
+            box.getItems().clear();
+            area.setText((theController.getDescription((int)o)));
+            removeMonster.getItems().remove((String) removeMonster.getValue());
+        }
+    });
+
     hbox1.getChildren().add(addMonster);
     hbox1.getChildren().add(addMonsterButton);
 
+    hbox3.getChildren().add(removeMonster);
+    hbox3.getChildren().add(removeMonsterButton);
 
 
     box1.getChildren().add(hbox1);
-    box1.getChildren().add(removeMonster);
+    box1.getChildren().add(hbox3);
 
 
     addTreasure = new ComboBox(FXCollections.observableList(setupTreasures()));
     addTreasure.setValue("Add Treasure");
     removeTreasure = new ComboBox();
     removeTreasure.setValue("Remove Treasure");
-    
+
+    addTreasureButton.setOnAction((ActionEvent) -> {
+        ObservableList selectedIndices = list.getSelectionModel().getSelectedIndices();
+        for(Object o : selectedIndices){
+            theController.addToDescription("Treasure: ", (int) o);
+            theController.addToDescription((String) addTreasure.getValue(), (int) o);
+            theController.addToDescription("\n", (int) o);
+            box.getItems().clear();
+            area.setText((theController.getDescription((int)o)));
+            removeTreasure.getItems().add((String) addTreasure.getValue()) ;
+        }
+    });
+
+    removeTreasureButton.setOnAction((ActionEvent) -> {
+        ObservableList selectedIndices = list.getSelectionModel().getSelectedIndices();
+        for(Object o : selectedIndices){
+            theController.removeFromDescription("Treasure: "+(String) removeTreasure.getValue()+"\n", (int) o);
+            box.getItems().clear();
+            area.setText((theController.getDescription((int)o)));
+            removeTreasure.getItems().remove((String) removeTreasure.getValue());
+        }
+    });
+
     hbox2.getChildren().add(addTreasure);
     hbox2.getChildren().add(addTreasureButton);
+    hbox4.getChildren().add(removeTreasure);
+    hbox4.getChildren().add(removeTreasureButton);
 
     box2.getChildren().add(hbox2);
-    box2.getChildren().add(removeTreasure);
+    box2.getChildren().add(hbox4);
+
     temp.setLeft(box1);
     temp.setCenter(box2);
     popup.getContent().addAll(temp);
